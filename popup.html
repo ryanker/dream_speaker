@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Popup</title>
+    <style>
+        html, body, p, h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 10px;
+            background: #F1F4F6;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        input[type=radio], input[type=checkbox] {
+            width: 18px;
+            height: 18px;
+            margin: 0 0 0 5px;
+            border-color: #cfd0d2;
+            position: relative;
+            bottom: -4px;
+        }
+
+        select {
+            min-width: 100px;
+            max-width: 160px;
+            height: 30px;
+            padding: 3px;
+            margin: 0 0 0 5px;
+            font-size: 15px;
+            border: 1px solid #cfd0d2;
+            border-radius: 4px;
+        }
+
+        .fx:after {
+            display: block;
+            content: '';
+            clear: both;
+        }
+
+        .box {
+            margin-bottom: 10px;
+            width: 230px;
+        }
+
+        .mt_1 {
+            margin-top: 10px;
+        }
+
+        .mt_2 {
+            margin-top: 20px;
+        }
+
+        .dmx_button {
+            background: #4395ff;
+            border: 1px solid #3589ff;
+            border-radius: 4px;
+            color: #fff;
+            line-height: 1;
+            padding: 8px 12px;
+            font-size: 14px;
+            white-space: nowrap;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+            user-select: none;
+            cursor: pointer;
+            transition: .1s;
+        }
+
+        .dmx_button:hover {
+            box-shadow: 2px 2px 5px 0 #d0d7de;
+        }
+
+        .dmx_button:active {
+            opacity: .7;
+        }
+
+        .dmx_button_default {
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            color: #606266;
+        }
+
+        .dmx_button_success {
+            background-color: #67c23a;
+            border-color: #67c23a;
+            color: #fff;
+        }
+
+        .dmx_button_warning {
+            background-color: #e6a23c;
+            border-color: #e6a23c;
+            color: #fff;
+        }
+
+        .dmx_button_danger {
+            background-color: #ef473a;
+            border-color: #dd1419;
+            color: #fff;
+        }
+
+        .dmx_inline {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="box fx">
+    朗读名称
+    <select id="speak_voice" key="voiceName">
+        <option value="">默认</option>
+    </select>
+</div>
+<div class="box fx">
+    朗读速度
+    <select key="rate">
+        <option value="">默认</option>
+        <option value="0.5">0.5X</option>
+        <option value="0.75">0.75X</option>
+        <option value="1">1X</option>
+        <option value="1.25">1.25X</option>
+        <option value="1.5">1.5X</option>
+        <option value="1.75">1.75X</option>
+        <option value="1.9">1.9X</option>
+        <option value="2">2X</option>
+        <option value="2.5">2.5X</option>
+        <option value="3">3X</option>
+    </select>
+</div>
+<div class="box fx">
+    朗读音高
+    <select key="pitch">
+        <option value="">默认</option>
+        <option value="0.5">0.5</option>
+        <option value="0.75">0.75</option>
+        <option value="1">1</option>
+        <option value="1.25">1.25</option>
+        <option value="1.5">1.5</option>
+        <option value="1.75">1.75</option>
+        <option value="2">2</option>
+    </select>
+</div>
+<div class="box fx">
+    自动朗读
+    <label><input type="checkbox" name="autoSpeak" value="on"></label>
+</div>
+<div id="speak_play" class="dmx_button mt_1">朗读</div>
+<div id="speak_stop" class="dmx_button dmx_button_danger mt_1">停止</div>
+</body>
+<script src="popup.js" type="text/javascript"></script>
+</html>

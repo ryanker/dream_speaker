@@ -1,0 +1,47 @@
+{
+  "name": "小说朗读器",
+  "description": "支持自动朗读小说",
+  "version": "1.0",
+  "manifest_version": 2,
+  "icons": {
+    "256": "256.png"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.biquge.com.cn/book/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "小说朗读器",
+    "default_icon": "256.png"
+  },
+  "permissions": [
+    "storage",
+    "tts",
+    "<all_urls>"
+  ],
+  "homepage_url": "http://www.ddmx.com",
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+R",
+        "mac": "MacCtrl+Shift+R"
+      },
+      "description": "打开设置"
+    }
+  }
+}
+
+
