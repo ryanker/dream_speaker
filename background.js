@@ -37,7 +37,13 @@ chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
         speak(m.text).then(() => {
             sendMessage(tabId, {action: 'next'})
         }).catch(err => {
-
+            debug('speak error:', err)
+            chrome.notifications.create('readerNotification', {
+                "type": "basic",
+                "iconUrl": '256.png',
+                "title": "朗读出错",
+                "message": "小说朗读出错"
+            })
         })
     }
 })
@@ -58,7 +64,6 @@ function sendMessage(tabId, message) {
 function loadConf() {
     let s = localStorage.getItem('conf')
     if (s) conf = JSON.parse(s)
-    debug(conf)
 }
 
 function setConf(k, v) {
@@ -81,7 +86,6 @@ function speak(text) {
         if (conf.voiceName) options.voiceName = conf.voiceName
         if (conf.rate) options.rate = Number(conf.rate)
         if (conf.pitch) options.pitch = Number(conf.pitch)
-        debug(conf, options)
         let arr = sliceStr(text, 128)
         let lastKey = arr.length - 1
         arr.forEach((v, k) => {

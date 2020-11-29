@@ -1,6 +1,6 @@
 'use strict'
 
-let isDebug = true
+let isDebug = false
 chrome.storage.local.get('autoSpeak', function (r) {
     if (r.autoSpeak === 'on') speak()
 })

@@ -30,6 +30,7 @@
   "permissions": [
     "storage",
     "tts",
+    "notifications",
     "<all_urls>"
   ],
   "homepage_url": "http://www.ddmx.com",
