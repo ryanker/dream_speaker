@@ -35,7 +35,7 @@ function speak() {
     let text = (title + '\n' + content).trim()
     let message = {action: 'speak', text: text}
     debug('message:', message)
-    text && sendMessage(message)
+    content && sendMessage(message)
 }
 
 function sendMessage(message) {
