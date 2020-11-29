@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.biquge.com.cn/book/*"
+        "<all_urls>"
       ],
       "js": [
         "content.js"

@@ -29,6 +29,8 @@ function speak() {
     debug('reading...')
     let tEl = S('h1')
     let cEl = $('content')
+    let wEl = $('wrapper')
+    if (!cEl || !wEl) return
     let title = '', content = ''
     if (tEl) title = tEl.innerText.trim()
     if (cEl) content = cEl.innerText.trim()
