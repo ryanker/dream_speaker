@@ -29,8 +29,17 @@ function speak() {
     debug('reading...')
     let tEl = S('h1')
     let cEl = $('content')
-    let wEl = $('wrapper')
-    if (!cEl || !wEl) return
+    if (!cEl) return
+
+    // 判断内容是否为小说内容
+    let nodes = cEl.childNodes
+    if (nodes.length < 10) return
+    let firstNode = nodes[0]
+    if (firstNode.nodeName !== '#text') return
+    if (firstNode.nodeValue.trim().length < 1) return
+    if (firstNode.nextSibling.nodeName !== 'BR') return
+
+    // 获取需要朗读的文字
     let title = '', content = ''
     if (tEl) title = tEl.innerText.trim()
     if (cEl) content = cEl.innerText.trim()
