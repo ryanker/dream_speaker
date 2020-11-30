@@ -109,7 +109,10 @@ function speak(text) {
             options.onEvent = function (e) {
                 // console.log('onEvent:', lastKey, k, v, e.type, options)
                 if (e.type === 'end') {
-                    if (k === lastKey) resolve()
+                    if (k === lastKey) {
+                        chrome.browserAction.setBadgeText({text: ''})
+                        resolve()
+                    }
                 } else if (e.type === 'error') {
                     debug('speak error:', e.errorMessage)
                     reject(e.errorMessage)
