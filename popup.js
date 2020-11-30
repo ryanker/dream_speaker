@@ -7,6 +7,7 @@ let voiceList = bg.voiceList
 document.addEventListener('DOMContentLoaded', function () {
     let speak_voice = $('speak_voice')
     let speak_play = $('speak_play')
+    let speak_pause = $('speak_pause')
     let speak_stop = $('speak_stop')
     let autoSpeak = document.querySelector('input[name="autoSpeak"]')
     for (const [key, val] of Object.entries(voiceList)) {
@@ -29,9 +30,20 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     speak_play.onclick = function () {
         bg.currentTabMessage({action: 'speakStart'})
+        speak_pause.innerText = '暂停朗读'
+    }
+    speak_pause.onclick = function () {
+        if (this.innerText === '暂停朗读') {
+            bg.pause()
+            this.innerText = '恢复朗读'
+        } else {
+            bg.resume()
+            this.innerText = '暂停朗读'
+        }
     }
     speak_stop.onclick = function () {
         bg.stop()
+        speak_pause.innerText = '暂停朗读'
     }
 
     // 自动朗读

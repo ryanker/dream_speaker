@@ -1,6 +1,6 @@
 'use strict'
 
-var isDebug = true
+var isDebug = false
 var conf = {}, langList = {}, voiceList = {}
 document.addEventListener('DOMContentLoaded', function () {
     // 读取配置
@@ -96,6 +96,7 @@ function debug(...data) {
     isDebug && console.log('[DEBUG]', ...data)
 }
 
+// 开始朗读
 function speak(text) {
     return new Promise((resolve, reject) => {
         let options = {}
@@ -115,7 +116,10 @@ function speak(text) {
                 }
             }
             if (k === 0) {
-                chrome.tts.speak(v, options)
+                chrome.tts.isSpeaking(function (speaking) {
+                    if (speaking) stop()
+                    chrome.tts.speak(v, options)
+                })
             } else {
                 chrome.tts.speak(v, Object.assign({enqueue: true}, options))
             }
@@ -123,8 +127,19 @@ function speak(text) {
     })
 }
 
+// 停止朗读
 function stop() {
     chrome.tts.stop()
+}
+
+// 暂停朗读
+function pause() {
+    chrome.tts.pause()
+}
+
+// 恢复朗读
+function resume() {
+    chrome.tts.resume()
 }
 
 function sliceStr(text, maxLen) {
