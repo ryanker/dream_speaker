@@ -47,7 +47,7 @@ function speak() {
         let text = node.textContent.trim()
         if (text) {
             // 定位选区
-            range.selectNodeContents(node)
+            range.selectNode(node)
             sel.removeAllRanges()
             sel.addRange(range)
 
