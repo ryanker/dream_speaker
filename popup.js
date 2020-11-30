@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
     speak_play.onclick = function () {
-        bg.currentTabMessage({action: 'speak'})
+        bg.currentTabMessage({action: 'speakStart'})
     }
     speak_stop.onclick = function () {
         bg.stop()
