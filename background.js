@@ -25,6 +25,18 @@ chrome.tts.getVoices(function (voices) {
     }
 })
 
+// 添加上下文菜单
+chrome.contextMenus.create({
+    "title": "朗读“%s”",
+    "contexts": ["selection"],
+    "onclick": function (info) {
+        speak(info.selectionText).catch(err => {
+            debug('speak error:', err)
+            notifications('朗读出错', '朗读选中文本出错')
+        })
+    }
+})
+
 // 监听消息
 chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
     // debug('sender', sender)
@@ -38,15 +50,19 @@ chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
             sendMessage(tabId, {action: 'speak'})
         }).catch(err => {
             debug('speak error:', err)
-            chrome.notifications.create('readerNotification', {
-                "type": "basic",
-                "iconUrl": '256.png',
-                "title": "朗读出错",
-                "message": "小说朗读出错"
-            })
+            notifications('朗读出错', '朗读小说出错')
         })
     }
 })
+
+function notifications(title, message) {
+    chrome.notifications.create('readerNotification', {
+        "type": "basic",
+        "iconUrl": '256.png',
+        "title": title,
+        "message": message
+    })
+}
 
 // 向当前窗口发送消息
 function currentTabMessage(message) {
