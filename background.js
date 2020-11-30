@@ -118,6 +118,8 @@ function speak(text) {
             if (k === 0) {
                 chrome.tts.isSpeaking(function (speaking) {
                     if (speaking) stop()
+                    chrome.browserAction.setBadgeText({text: 'on'})
+                    chrome.browserAction.setBadgeBackgroundColor({color: 'red'})
                     chrome.tts.speak(v, options)
                 })
             } else {
@@ -129,6 +131,7 @@ function speak(text) {
 
 // 停止朗读
 function stop() {
+    chrome.browserAction.setBadgeText({text: ''})
     chrome.tts.stop()
 }
 
