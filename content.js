@@ -51,7 +51,7 @@ function speak() {
 
     // 判断内容是否为小说内容
     let nodes = cEl.childNodes
-    if (nodes.length < 5) return
+    if (nodes.length < 3) return
     let firstNode = cEl.firstChild
     if (firstNode.nodeName !== '#text') return
     if (firstNode.nodeValue.trim().length < 1) return
