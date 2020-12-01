@@ -6,7 +6,7 @@ let first = true
 let nodeIndex = 0
 chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
     isScribble = r.isScribble
-    if (r.autoSpeak) speak()
+    if (r.autoSpeak) setTimeout(speak, 800)
 })
 chrome.runtime.onMessage.addListener(function (m) {
     debug('m:', m)
@@ -72,6 +72,8 @@ function speak() {
         if (node.nodeName === '#text') {
             text = node.textContent.trim()
         } else if (node.nodeName === 'P') {
+            text = node.innerText.trim()
+        } else if (node.nodeName === 'DIV' && node.className === '') {
             text = node.innerText.trim()
         }
         if (text) {
