@@ -1,10 +1,12 @@
 'use strict'
 
 let isDebug = false
+let isScribble = false
 let first = true
 let nodeIndex = 0
-chrome.storage.local.get('autoSpeak', function (r) {
-    if (r.autoSpeak === 'on') speak()
+chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
+    isScribble = r.isScribble
+    if (r.autoSpeak) speak()
 })
 chrome.runtime.onMessage.addListener(function (m) {
     debug('m:', m)
@@ -14,8 +16,20 @@ chrome.runtime.onMessage.addListener(function (m) {
         first = true
         nodeIndex = 0
         speak()
+    } else if (m.action === 'scribbleSpeak') {
+        scribbleSpeak()
     }
 })
+
+// 划词朗读
+document.addEventListener('mouseup', scribbleSpeak)
+
+function scribbleSpeak() {
+    if (!isScribble) return
+    let text = getSelection().toString().trim()
+    if (!text) return
+    sendMessage({action: 'scribbleSpeak', text: text})
+}
 
 function speak() {
     debug('reading...')

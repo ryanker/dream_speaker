@@ -30,10 +30,7 @@ chrome.contextMenus.create({
     "title": "朗读“%s”",
     "contexts": ["selection"],
     "onclick": function (info) {
-        speak(info.selectionText).catch(err => {
-            debug('speak error:', err)
-            notifications('朗读出错', '朗读选中文本出错')
-        })
+        currentTabMessage({action: 'scribbleSpeak', text: info.selectionText})
     }
 })
 
@@ -51,6 +48,11 @@ chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
         }).catch(err => {
             debug('speak error:', err)
             notifications('朗读出错', '朗读小说出错')
+        })
+    } else if (m.action === 'scribbleSpeak') {
+        speak(m.text).catch(err => {
+            debug('speak error:', err)
+            notifications('朗读出错', '朗读选中文本出错')
         })
     }
 })

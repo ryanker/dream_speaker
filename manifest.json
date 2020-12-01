@@ -1,6 +1,6 @@
 {
   "name": "梦想朗读小助手",
-  "description": "具备右键朗读选中文本功能，支持40多种语言，还可自动朗读小说。",
+  "description": "划词朗读选中文本功能，支持40多种语言，还可自动朗读小说。",
   "version": "1.0",
   "manifest_version": 2,
   "icons": {

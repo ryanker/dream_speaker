@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let speak_play = $('speak_play')
     let speak_pause = $('speak_pause')
     let speak_stop = $('speak_stop')
-    let autoSpeak = document.querySelector('input[name="autoSpeak"]')
     for (const [key, val] of Object.entries(voiceList)) {
         val.forEach(v => {
             let op = document.createElement('option')
@@ -46,13 +45,24 @@ document.addEventListener('DOMContentLoaded', function () {
         speak_pause.innerText = '暂停朗读'
     }
 
-    // 自动朗读
-    autoSpeak.onclick = function () {
-        chrome.storage.local.set({'autoSpeak': this.checked ? 'on' : ''})
-    }
-    chrome.storage.local.get('autoSpeak', function (r) {
-        if (r.autoSpeak === 'on') autoSpeak.checked = true
+    let isScribble = document.querySelector('input[name="isScribble"]')
+    let autoSpeak = document.querySelector('input[name="autoSpeak"]')
+
+    // 初始值
+    chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
+        if (r.autoSpeak) autoSpeak.checked = true
+        if (r.isScribble) isScribble.checked = true
     })
+
+    // 启用划词朗读
+    isScribble.onclick = function () {
+        chrome.storage.local.set({'isScribble': this.checked})
+    }
+
+    // 启用自动朗读
+    autoSpeak.onclick = function () {
+        chrome.storage.local.set({'autoSpeak': this.checked})
+    }
 })
 
 function $(id) {
