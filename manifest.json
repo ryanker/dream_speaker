@@ -1,6 +1,6 @@
 {
-  "name": "梦想朗读小助手",
-  "description": "划词朗读选中文本功能，支持40多种语言，还可自动朗读小说。",
+  "name": "梦想小说朗读助手",
+  "description": "支持大部分小说网站自动朗读功能，同时支持划词朗读选中文本功能，支持40多种语言。",
   "version": "1.0",
   "manifest_version": 2,
   "icons": {
@@ -24,7 +24,7 @@
   ],
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "小说朗读器",
+    "default_title": "梦想小说朗读助手",
     "default_icon": "256.png"
   },
   "permissions": [
