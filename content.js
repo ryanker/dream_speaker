@@ -71,12 +71,12 @@ function speak() {
             document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + bcr.top - 10
 
             // 朗读内容
-            let content = sel.toString()
+            // let text = sel.toString()
             if (first) {
-                content = (title + '\n' + content).trim()
+                text = (title + '\n' + text).trim()
                 first = false
             }
-            sendMessage({action: 'speak', text: content})
+            sendMessage({action: 'speak', text: text})
             break
         }
     }
