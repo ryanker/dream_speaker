@@ -61,11 +61,13 @@ function speak() {
     let sel = window.getSelection()
     let range = document.createRange()
     if (nodeIndex >= nodes.length) next()
+    let isText = false // 是否有文本内容
     while (nodeIndex < nodes.length) {
         let node = nodes[nodeIndex]
         nodeIndex++
         let text = node.textContent.trim()
         if (text) {
+            isText = true
             // 定位选区
             range.selectNode(node)
             sel.removeAllRanges()
@@ -88,6 +90,7 @@ function speak() {
             break
         }
     }
+    if (!isText) next() // 如果循环全部节点都没文本，就翻页
 }
 
 function next() {
