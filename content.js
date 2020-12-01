@@ -4,10 +4,24 @@ let isDebug = false
 let isScribble = false
 let first = true
 let nodeIndex = 0
+let nextHref = ''
 chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
     isScribble = r.isScribble
     if (r.autoSpeak) setTimeout(speak, 800)
 })
+
+// 预加载下一页
+setTimeout(() => {
+    nextHref = getNextHref()
+
+    // 预加载
+    let link = document.createElement("link")
+    link.href = nextHref
+    link.rel = 'preload'
+    link.as = 'fetch'
+    document.head.appendChild(link)
+}, 1000)
+
 chrome.runtime.onMessage.addListener(function (m) {
     debug('m:', m)
     if (m.action === 'speak') {
@@ -62,7 +76,7 @@ function speak() {
     // 遍历定位朗读
     let sel = window.getSelection()
     let range = document.createRange()
-    if (nodeIndex >= nodes.length) next()
+    if (nodeIndex >= nodes.length) toNext()
     let isText = false // 是否有文本内容
     while (nodeIndex < nodes.length) {
         let node = nodes[nodeIndex]
@@ -100,17 +114,21 @@ function speak() {
             break
         }
     }
-    if (!isText) next() // 如果循环全部节点都没文本，就翻页
+    if (!isText) toNext() // 如果循环全部节点都没文本，就翻页
 }
 
-function next() {
+function toNext() {
+    if (!nextHref) nextHref = getNextHref()
+    if (nextHref) location.href = nextHref
+}
+
+function getNextHref() {
     let aEl = A('a')
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
         let text = el.innerText.trim()
         if (el.id === 'next' || ['下一章', '下一页'].includes(text)) {
-            location.href = el.getAttribute('href')
-            break
+            return el.getAttribute('href')
         }
     }
 }
