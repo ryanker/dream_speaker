@@ -37,7 +37,7 @@ function speak() {
     let tEl = S('h1')
 
     let cEl
-    for (let id of ['cont-text', 'content', 'BookText']) {
+    for (let id of ['cont-text', 'chaptercontent', 'content', 'BookText']) {
         cEl = $(id)
         if (cEl) break
     }
