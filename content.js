@@ -13,6 +13,7 @@ chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
 // 预加载下一页
 setTimeout(() => {
     nextHref = getNextHref()
+    if (!nextHref) return
 
     // 预加载
     let link = document.createElement("link")
