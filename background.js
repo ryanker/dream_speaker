@@ -30,7 +30,10 @@ chrome.contextMenus.create({
     "title": "朗读“%s”",
     "contexts": ["selection"],
     "onclick": function (info) {
-        currentTabMessage({action: 'scribbleSpeak', text: info.selectionText})
+        speak(info.selectionText).catch(err => {
+            debug('speak error:', err)
+            notifications('朗读出错', '朗读选中文本出错')
+        })
     }
 })
 

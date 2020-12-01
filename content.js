@@ -31,21 +31,16 @@ chrome.runtime.onMessage.addListener(function (m) {
         first = true
         nodeIndex = 0
         speak()
-    } else if (m.action === 'scribbleSpeak') {
-        let text = getSelection().toString().trim()
-        if (text) sendMessage({action: 'scribbleSpeak', text: text})
     }
 })
 
 // 划词朗读
-document.addEventListener('mouseup', scribbleSpeak)
-
-function scribbleSpeak() {
+document.addEventListener('mouseup', function () {
     if (!isScribble) return
     let text = getSelection().toString().trim()
     if (!text) return
     sendMessage({action: 'scribbleSpeak', text: text})
-}
+})
 
 function speak() {
     debug('reading...')
