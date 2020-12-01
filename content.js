@@ -35,7 +35,12 @@ function scribbleSpeak() {
 function speak() {
     debug('reading...')
     let tEl = S('h1')
-    let cEl = $('content')
+
+    let cEl
+    for (let id of ['content', 'BookText']) {
+        cEl = $(id)
+        if (cEl) break
+    }
     if (!cEl) return
 
     // 获取需要朗读的文字
@@ -90,7 +95,7 @@ function next() {
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
         let text = el.innerText.trim()
-        if (text === '下一章') {
+        if (['下一章', '下一页'].includes(text)) {
             location.href = el.getAttribute('href')
             break
         }
