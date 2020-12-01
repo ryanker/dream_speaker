@@ -66,6 +66,7 @@ function speak() {
 
     // 判断内容是否为小说内容
     if (cEl.getElementsByTagName('img').length > 0) return // 有图片
+    if (cEl.getElementsByTagName('h1').length > 0) return // 排除
     if (cEl.innerText.length < 200) return // 内容太少
     let nodes = cEl.childNodes
     if (nodes.length < 3) return
