@@ -67,8 +67,11 @@ function speak() {
             sel.addRange(range)
 
             // 定位滚动条位置
-            let bcr = sel.getRangeAt(0).getBoundingClientRect()
-            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + bcr.top - 10
+            let sRange = sel.getRangeAt(0)
+            if (sRange) {
+                let bcr = sRange.getBoundingClientRect()
+                document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + bcr.top - 10
+            }
 
             // 朗读内容
             // let text = sel.toString()
