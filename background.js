@@ -108,6 +108,7 @@ function speak(text) {
         let arr = sliceStr(text, 128)
         let lastKey = arr.length - 1
         arr.forEach((v, k) => {
+            // debug(k, v)
             options.onEvent = function (e) {
                 // console.log('onEvent:', lastKey, k, v, e.type, options)
                 if (e.type === 'end') {

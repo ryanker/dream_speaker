@@ -37,7 +37,7 @@ function speak() {
     let tEl = S('h1')
 
     let cEl
-    for (let id of ['content', 'BookText']) {
+    for (let id of ['cont-text', 'content', 'BookText']) {
         cEl = $(id)
         if (cEl) break
     }
@@ -50,12 +50,14 @@ function speak() {
     if (!content) return
 
     // 判断内容是否为小说内容
+    if (cEl.getElementsByTagName('img').length > 0) return // 有图片
+    if (cEl.innerText.length < 200) return // 内容太少
     let nodes = cEl.childNodes
     if (nodes.length < 3) return
-    let firstNode = cEl.firstChild
-    if (firstNode.nodeName !== '#text') return
-    if (firstNode.nodeValue.trim().length < 1) return
-    if (firstNode.nextSibling.nodeName !== 'BR') return
+    // let firstNode = cEl.firstChild
+    // if (firstNode.nodeName !== '#text') return
+    // if (firstNode.nodeValue.trim().length < 1) return
+    // if (firstNode.nextSibling.nodeName !== 'BR') return
 
     // 遍历定位朗读
     let sel = window.getSelection()
@@ -65,7 +67,13 @@ function speak() {
     while (nodeIndex < nodes.length) {
         let node = nodes[nodeIndex]
         nodeIndex++
-        let text = node.textContent.trim()
+
+        let text = ''
+        if (node.nodeName === '#text') {
+            text = node.textContent.trim()
+        } else if (node.nodeName === 'P') {
+            text = node.innerText.trim()
+        }
         if (text) {
             isText = true
             // 定位选区
