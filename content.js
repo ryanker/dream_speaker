@@ -17,7 +17,8 @@ chrome.runtime.onMessage.addListener(function (m) {
         nodeIndex = 0
         speak()
     } else if (m.action === 'scribbleSpeak') {
-        scribbleSpeak()
+        let text = getSelection().toString().trim()
+        if (text) sendMessage({action: 'scribbleSpeak', text: text})
     }
 })
 

@@ -123,7 +123,7 @@ function speak(text) {
             if (k === 0) {
                 chrome.tts.isSpeaking(function (speaking) {
                     if (speaking) stop()
-                    chrome.browserAction.setBadgeText({text: 'on'})
+                    chrome.browserAction.setBadgeText({text: 'ing'})
                     chrome.browserAction.setBadgeBackgroundColor({color: 'red'})
                     chrome.tts.speak(v, options)
                 })
