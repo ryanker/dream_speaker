@@ -108,7 +108,7 @@ function next() {
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
         let text = el.innerText.trim()
-        if (['下一章', '下一页'].includes(text)) {
+        if (el.id === 'next' || ['下一章', '下一页'].includes(text)) {
             location.href = el.getAttribute('href')
             break
         }
