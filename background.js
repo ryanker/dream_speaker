@@ -104,36 +104,40 @@ function debug(...data) {
 // 开始朗读
 function speak(text) {
     return new Promise((resolve, reject) => {
-        let options = {}
-        if (conf.voiceName) options.voiceName = conf.voiceName
-        if (conf.rate) options.rate = Number(conf.rate)
-        if (conf.pitch) options.pitch = Number(conf.pitch)
-        let arr = sliceStr(text, 128)
-        let lastKey = arr.length - 1
-        arr.forEach((v, k) => {
-            // debug(k, v)
-            options.onEvent = function (e) {
-                // console.log('onEvent:', lastKey, k, v, e.type, options)
-                if (e.type === 'end') {
-                    if (k === lastKey) {
-                        chrome.browserAction.setBadgeText({text: ''})
-                        resolve()
+        chrome.tts.isSpeaking(function (speaking) {
+            if (speaking) stop()
+
+            let options = {}
+            if (conf.voiceName) options.voiceName = conf.voiceName
+            if (conf.rate) options.rate = Number(conf.rate)
+            if (conf.pitch) options.pitch = Number(conf.pitch)
+            let arr = sliceStr(text, 128)
+            let lastKey = arr.length - 1
+            arr.forEach((v, k) => {
+                debug(k, v)
+                options.onEvent = function (e) {
+                    // ((e, k) => {
+                    // debug('onEvent:', e)
+                    if (e.type === 'end') {
+                        debug('end:', k, lastKey)
+                        if (k === lastKey) {
+                            chrome.browserAction.setBadgeText({text: ''})
+                            resolve()
+                        }
+                    } else if (e.type === 'error') {
+                        debug('speak error:', e.errorMessage)
+                        reject(e.errorMessage)
                     }
-                } else if (e.type === 'error') {
-                    debug('speak error:', e.errorMessage)
-                    reject(e.errorMessage)
+                    // })(e, k)
                 }
-            }
-            if (k === 0) {
-                chrome.tts.isSpeaking(function (speaking) {
-                    if (speaking) stop()
+                if (k === 0) {
                     chrome.browserAction.setBadgeText({text: '读'})
                     chrome.browserAction.setBadgeBackgroundColor({color: 'red'})
                     chrome.tts.speak(v, options)
-                })
-            } else {
-                chrome.tts.speak(v, Object.assign({enqueue: true}, options))
-            }
+                } else {
+                    chrome.tts.speak(v, Object.assign({enqueue: true}, options))
+                }
+            })
         })
     })
 }
