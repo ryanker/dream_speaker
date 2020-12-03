@@ -158,6 +158,7 @@ function resume() {
     chrome.tts.resume()
 }
 
+// 分隔字符串
 function sliceStr(text, maxLen) {
     let r = []
     if (text.length <= maxLen) {
