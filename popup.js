@@ -45,26 +45,30 @@ document.addEventListener('DOMContentLoaded', function () {
         speak_pause.innerText = '暂停朗读'
     }
 
-    let isScribble = document.querySelector('input[name="isScribble"]')
-    let autoSpeak = document.querySelector('input[name="autoSpeak"]')
-
     // 初始值
-    chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
-        if (r.autoSpeak) autoSpeak.checked = true
-        if (r.isScribble) isScribble.checked = true
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload'], function (r) {
+        if (r.isScribble) S('input[name="isScribble"]').checked = true
+        if (r.autoSpeak) S('input[name="autoSpeak"]').checked = true
+        if (r.enablePreload) S('input[name="enablePreload"]').checked = true
     })
 
-    // 启用划词朗读
-    isScribble.onclick = function () {
-        chrome.storage.local.set({'isScribble': this.checked})
-    }
-
-    // 启用自动朗读
-    autoSpeak.onclick = function () {
-        chrome.storage.local.set({'autoSpeak': this.checked})
-    }
+    // 绑定事件
+    document.querySelectorAll('input[name]').forEach(el => {
+        el.onclick = function () {
+            let name = this.getAttribute('name')
+            let obj = {}
+            obj[name] = this.checked
+            chrome.storage.local.set(obj, function () {
+                !chrome.runtime.lastError && bg.currentTabMessage({action: 'loadStorage'})
+            })
+        }
+    })
 })
 
 function $(id) {
     return document.getElementById(id)
+}
+
+function S(s) {
+    return document.querySelector(s)
 }

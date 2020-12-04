@@ -1,27 +1,11 @@
 'use strict'
 
 let isDebug = false
-let isScribble = false
-let first = true
-let nodeIndex = 0
-let nextHref = ''
-chrome.storage.local.get(['autoSpeak', 'isScribble'], function (r) {
-    isScribble = r.isScribble
-    if (r.autoSpeak) setTimeout(speak, 800)
+let conf = {}
+let first, nodeIndex, nextHref, nextBody
+loadStorage(function () {
+    init()
 })
-
-// 预加载下一页
-setTimeout(() => {
-    nextHref = getNextHref()
-    if (!nextHref) return
-
-    // 预加载
-    let link = document.createElement("link")
-    link.href = nextHref
-    link.rel = 'preload'
-    link.as = 'fetch'
-    document.head.appendChild(link)
-}, 1000)
 
 chrome.runtime.onMessage.addListener(function (m) {
     debug('m:', m)
@@ -31,16 +15,44 @@ chrome.runtime.onMessage.addListener(function (m) {
         first = true
         nodeIndex = 0
         speak()
+    } else if (m.action === 'loadStorage') {
+        loadStorage()
     }
 })
 
 // 划词朗读
 document.addEventListener('mouseup', function () {
-    if (!isScribble) return
+    if (!conf.isScribble) return
     let text = getSelection().toString().trim()
     if (!text) return
     sendMessage({action: 'scribbleSpeak', text: text})
 })
+
+function loadStorage(callback) {
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload'], function (r) {
+        conf = r
+        typeof callback === 'function' && callback()
+    })
+}
+
+// 初始化参数
+function init() {
+    first = true
+    nodeIndex = 0
+    nextHref = ''
+    nextBody = null
+
+    // 是否自动开始朗读
+    if (conf.autoSpeak) setTimeout(speak, 800)
+
+    // 预加载下一页
+    if (conf.enablePreload) {
+        setTimeout(() => {
+            nextHref = getNextHref()
+            if (nextHref) preloadNext(nextHref)
+        }, 1000)
+    }
+}
 
 function speak() {
     debug('reading...')
@@ -115,19 +127,75 @@ function speak() {
 }
 
 function toNext() {
-    if (!nextHref) nextHref = getNextHref()
-    if (nextHref) location.href = nextHref
+    if (conf.enablePreload && nextBody) {
+        let el = S('body')
+        if (!el) return
+        el.innerHTML = nextBody // 替换页面内容
+        history.pushState(null, null, nextHref) // 修改 URL
+        init() // 初始化
+    } else {
+        if (!nextHref) nextHref = getNextHref()
+        if (nextHref) location.href = nextHref
+    }
 }
 
+// 获取下一章
 function getNextHref() {
     let aEl = A('a')
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
         let text = el.innerText.trim()
         if (el.id === 'next' || ['下一章', '下一页'].includes(text)) {
-            return el.getAttribute('href')
+            let url = el.getAttribute('href')
+            if (url.length > 11 && url.substring(0, 11) === 'javascript:') return ''
+            // if (url.length < 4) return ''
+            // if (url[0] === '/' || url.substring(0, 4) === 'http') return url
+            return url
         }
     }
+}
+
+// 预加载下一章
+function preloadNext(nextHref) {
+    // let link = document.createElement("link")
+    // link.href = nextHref
+    // link.rel = 'preload'
+    // link.as = 'fetch'
+    // document.head.appendChild(link)
+    httpGet(nextHref, 'document').then(r => {
+        let el = r.querySelector('body')
+        if (el) nextBody = el.innerHTML
+        // console.log(nextHref, r.querySelector('h1').innerText, nextBody.length)
+        // setTimeout(toNext, 5000)
+    }).catch(err => {
+        debug(err)
+    })
+}
+
+function httpGet(url, type, headers) {
+    return new Promise((resolve, reject) => {
+        let c = new XMLHttpRequest()
+        c.responseType = type || 'text'
+        c.timeout = 30000
+        c.onload = function (e) {
+            if (this.status === 200) {
+                resolve(this.response)
+            } else {
+                reject(e)
+            }
+        }
+        c.ontimeout = function (e) {
+            reject('NETWORK_TIMEOUT', e)
+        }
+        c.onerror = function (e) {
+            reject('NETWORK_ERROR', e)
+        }
+        c.open("GET", url)
+        headers && headers.forEach(v => {
+            c.setRequestHeader(v.name, v.value)
+        })
+        c.send()
+    })
 }
 
 function sendMessage(message) {
