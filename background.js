@@ -60,6 +60,7 @@ chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
     }
 })
 
+// 通知
 function notifications(title, message) {
     chrome.notifications.create('readerNotification', {
         "type": "basic",

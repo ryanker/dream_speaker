@@ -28,6 +28,7 @@ document.addEventListener('mouseup', function () {
     sendMessage({action: 'scribbleSpeak', text: text})
 })
 
+// 加载设置
 function loadStorage(callback) {
     chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload'], function (r) {
         conf = r
@@ -54,6 +55,7 @@ function init() {
     }
 }
 
+// 朗读文本
 function speak() {
     debug('reading...')
     let tEl = S('h1')
@@ -126,6 +128,7 @@ function speak() {
     if (!isText) toNext() // 如果循环全部节点都没文本，就翻页
 }
 
+// 跳转到下一章
 function toNext() {
     if (conf.enablePreload && nextBody) {
         let el = S('body')
