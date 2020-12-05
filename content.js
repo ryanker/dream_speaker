@@ -92,9 +92,9 @@ function speak() {
     while (nodeIndex < nodes.length) {
         let node = nodes[nodeIndex]
         nodeIndex++
+        if (node.nodeType !== 1 && node.nodeType !== 3) continue
 
         let text = ''
-        if (node.nodeType !== 1 && node.nodeType !== 3) continue
         if (node.nodeName === '#text') {
             text = node.textContent.trim()
         } else if (node.nodeName === 'P') {
@@ -111,14 +111,16 @@ function speak() {
             sel.addRange(range)
 
             // 定位滚动条位置
-            let sRange = sel.getRangeAt(0)
-            if (sRange) {
-                let bcr = sRange.getBoundingClientRect()
-                document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + bcr.top - 10
+            let s = sel.toString()?.trim()
+            if (s) {
+                let sRange = sel.getRangeAt(0)
+                if (sRange) {
+                    let bcr = sRange.getBoundingClientRect()
+                    document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + bcr.top - 10
+                }
             }
 
             // 朗读内容
-            // let text = sel.toString()
             if (first) {
                 text = (title + '\n' + text).trim()
                 first = false
