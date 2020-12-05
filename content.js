@@ -106,9 +106,12 @@ function speak() {
             isText = true
 
             // 定位选区
-            range.selectNode(node)
-            sel.removeAllRanges()
-            sel.addRange(range)
+            try {
+                range.selectNode(node)
+                sel.removeAllRanges()
+                sel.addRange(range)
+            } catch (e) {
+            }
 
             // 定位滚动条位置
             let s = sel.toString()?.trim()
