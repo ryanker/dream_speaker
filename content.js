@@ -94,6 +94,7 @@ function speak() {
         nodeIndex++
 
         let text = ''
+        if (node.nodeType !== 1 && node.nodeType !== 3) continue
         if (node.nodeName === '#text') {
             text = node.textContent.trim()
         } else if (node.nodeName === 'P') {
@@ -103,6 +104,7 @@ function speak() {
         }
         if (text) {
             isText = true
+
             // 定位选区
             range.selectNode(node)
             sel.removeAllRanges()
