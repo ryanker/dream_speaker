@@ -44,14 +44,18 @@ function init() {
     nextBody = null
 
     // 是否自动开始朗读
-    if (conf.autoSpeak) setTimeout(speak, 800)
+    if (conf.autoSpeak) {
+        setTimeout(() => {
+            speak()
+        }, 1000)
+    }
 
     // 预加载下一页
     if (conf.enablePreload) {
         setTimeout(() => {
             nextHref = getNextHref()
             if (nextHref) preloadNext(nextHref)
-        }, 1000)
+        }, 1500)
     }
 }
 
@@ -107,8 +111,9 @@ function speak() {
 
             // 定位选区
             range.selectNode(node)
+            // console.log('length:', nodeIndex, text.length)
             sel.removeAllRanges()
-            sel.rangeCount === 0 && sel.addRange(range)
+            sel.addRange(range)
 
             // 定位滚动条位置
             let s = sel.toString()?.trim()
@@ -139,7 +144,9 @@ function toNext() {
         if (!el) return
         el.innerHTML = nextBody // 替换页面内容
         history.pushState(null, null, nextHref) // 修改 URL
-        init() // 初始化
+        setTimeout(() => {
+            init() // 初始化
+        }, 800)
     } else {
         if (!nextHref) nextHref = getNextHref()
         if (nextHref) location.href = nextHref
