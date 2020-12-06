@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(function (m, sender, sendResponse) {
 function notifications(title, message) {
     chrome.notifications.create('readerNotification', {
         "type": "basic",
-        "iconUrl": '256.png',
+        "iconUrl": '128.png',
         "title": title,
         "message": message
     })

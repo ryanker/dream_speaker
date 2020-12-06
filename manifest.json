@@ -4,7 +4,7 @@
   "version": "1.0",
   "manifest_version": 2,
   "icons": {
-    "256": "256.png"
+    "128": "128.png"
   },
   "background": {
     "scripts": [
@@ -25,7 +25,7 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_title": "梦想小说朗读助手",
-    "default_icon": "256.png"
+    "default_icon": "128.png"
   },
   "permissions": [
     "storage",
