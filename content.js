@@ -143,6 +143,7 @@ function toNext() {
         let el = S('body')
         if (!el) return
         el.innerHTML = nextBody // 替换页面内容
+        document.scrollingElement.scrollTop = 0 // 返回顶部
         history.pushState(null, null, nextHref) // 修改 URL
         setTimeout(() => {
             init() // 初始化
