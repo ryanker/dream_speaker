@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "\u003Call_urls>"
       ],
       "js": [
         "content.js"
@@ -32,7 +32,7 @@
     "tts",
     "notifications",
     "contextMenus",
-    "<all_urls>"
+    "\u003Call_urls>"
   ],
   "homepage_url": "http://www.ddmx.com",
   "commands": {
