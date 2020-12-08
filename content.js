@@ -73,8 +73,8 @@ function speak() {
 
     // 获取需要朗读的文字
     let title = '', content = ''
-    if (tEl) title = tEl.innerText.trim()
-    if (cEl) content = cEl.innerText.trim()
+    if (tEl) title = tEl.innerText?.trim()
+    if (cEl) content = cEl.innerText?.trim()
     if (!content) return
 
     // 判断内容是否为小说内容
