@@ -159,7 +159,7 @@ function getNextHref() {
     let aEl = A('a[href]')
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
-        let text = el.innerText.trim()
+        let text = el.innerText?.trim()
         if (el.id === 'next' || ['下一章', '下一页'].includes(text)) {
             let url = el.getAttribute('href')
             if (url.length > 11 && url.substring(0, 11) === 'javascript:') return ''
