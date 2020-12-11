@@ -156,7 +156,7 @@ function toNext() {
 
 // 获取下一章
 function getNextHref() {
-    let aEl = A('a')
+    let aEl = A('a[href]')
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
         let text = el.innerText.trim()
