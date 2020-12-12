@@ -1,7 +1,7 @@
 {
   "name": "梦想小说朗读助手",
   "description": "支持数百小说网站自动朗读功能，同时支持划词朗读选中文本功能，可离线朗读40多种语言。",
-  "version": "1.1",
+  "version": "1.2",
   "manifest_version": 2,
   "icons": {
     "128": "128.png"

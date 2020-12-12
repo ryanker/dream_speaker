@@ -2,7 +2,7 @@
 
 let isDebug = false
 let conf = {}
-let first, nodeIndex, nextHref, nextBody
+let first, nodeIndex, nextHref, nextBody, nextTitle
 loadStorage(function () {
     init()
 })
@@ -142,9 +142,10 @@ function toNext() {
     if (conf.enablePreload && nextBody) {
         let el = S('body')
         if (!el) return
-        el.innerHTML = nextBody // 替换页面内容
+        el.innerHTML = nextBody // 修改页面内容
+        S('title').innerText = nextTitle // 修改页面标题
         document.scrollingElement.scrollTop = 0 // 返回顶部
-        history.pushState(null, null, nextHref) // 修改 URL
+        history.pushState(null, nextTitle, nextHref) // 修改 URL
         setTimeout(() => {
             init() // 初始化
         }, 800)
@@ -179,9 +180,12 @@ function preloadNext(nextHref) {
     // document.head.appendChild(link)
     httpGet(nextHref, 'document').then(r => {
         let el = r.querySelector('body')
-        if (el) nextBody = el.innerHTML
+        if (el) {
+            nextBody = el.innerHTML
+            nextTitle = r.querySelector('title')?.innerText
+        }
         // console.log(nextHref, r.querySelector('h1').innerText, nextBody.length)
-        // setTimeout(toNext, 5000)
+        // setTimeout(toNext, 10000)
     }).catch(err => {
         debug(err)
     })
