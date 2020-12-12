@@ -35,6 +35,7 @@
     "\u003Call_urls>"
   ],
   "homepage_url": "http://www.ddmx.com",
+  "update_url": "https://clients2.google.com/service/update2/crx",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
