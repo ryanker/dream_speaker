@@ -14,6 +14,7 @@ chrome.runtime.onMessage.addListener(function (m) {
     } else if (m.action === 'speakStart') {
         first = true
         nodeIndex = 0
+        conf.autoSpeakHost = '' // 初始
         speak()
     } else if (m.action === 'loadStorage') {
         loadStorage()
