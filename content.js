@@ -131,12 +131,24 @@ function getContentEl() {
     }
 
     // 检测是不是正确的小说内容
+    let getLines = function (el) {
+        let n = 0
+        el.childNodes.forEach(e => {
+            if (e.nodeName === 'P') n++
+            else if (e.nodeName === '#text' && e.textContent.trim()) n++
+            else if (e.nodeName === 'DIV' && e.className === '') n++
+        })
+        return n
+    }
     let checkContent = function (el) {
-        if (el.innerText && el.innerText.length < 100) return false // 小于 100 字
-        if (el.getElementsByTagName('img').length > 0) return false // 含有图片
+        if (!el.innerText) return false
+        if (el.innerText.trim().length < 100) return false // 小于 100 字
+        // if (el.getElementsByTagName('img').length > 0) return false // 含有图片
         if (el.querySelectorAll('h1,h2,h3,h4,h5,h6').length > 0) return false // 含有标题标签
         if (el.querySelectorAll('ul,li,dl,dt,dd').length > 0) return false // 含有列表标签
-        return true
+        if (el.querySelectorAll('style,table').length > 0) return false // 排除样式和表格
+        if (el.className?.includes('copy')) return false // 排除版权信息
+        return getLines(el) > 1
     }
 
     if (el && checkContent(el)) return el
@@ -146,7 +158,7 @@ function getContentEl() {
 
     // 模糊匹配，较耗资源
     let arr = []
-    A('[id]').forEach(el => {
+    A('div[id]').forEach(el => {
         if (checkContent(el)) arr.push(el) // 看一下合规的元素有多少
     })
     if (arr.length === 1) return arr[0] // 如果只有一个，就直接返回
@@ -160,18 +172,9 @@ function getContentEl() {
     }
 
     // 有多个，那就进行排序筛选
-    let checkLine = function (el) {
-        let n = 0
-        el.childNodes.forEach(e => {
-            if (e.nodeName === 'P') n++
-            else if (e.nodeName === '#text' && e.textContent.trim()) n++
-            else if (e.nodeName === 'DIV' && e.className === '') n++
-        })
-        return n
-    }
     if (arr.length > 1) {
-        arr.sort((a, b) => b.innerText.length - a.innerText.length) // 字符大小排序
-        arr.sort((a, b) => checkLine(b) - checkLine(a)) // 有效段落排序
+        arr.sort((a, b) => b.innerText.trim().length - a.innerText.trim().length) // 字符大小排序
+        arr.sort((a, b) => getLines(b) - getLines(a)) // 有效段落排序
         return arr[0]
     }
     return null
