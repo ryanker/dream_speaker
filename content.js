@@ -30,7 +30,7 @@ document.addEventListener('mouseup', function () {
 
 // 加载设置
 function loadStorage(callback) {
-    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload'], function (r) {
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch'], function (r) {
         conf = r
         typeof callback === 'function' && callback()
     })
@@ -82,6 +82,7 @@ function speak() {
         if (node.nodeName === '#text') {
             text = node.textContent.trim()
         } else if (node.nodeName === 'P') {
+            node.querySelector('span.review-count')?.remove() // 去掉起点小说的评论数
             text = node.innerText.trim()
         } else if (node.nodeName === 'DIV' && node.className === '') {
             text = node.innerText.trim()
@@ -136,6 +137,9 @@ function getContentEl() {
     }
 
     if (el && checkContent(el)) return el
+
+    // 开启自动朗读，并关闭超强识别时
+    if (conf.autoSpeak && !conf.superMatch) return null
 
     // 模糊匹配，较耗资源
     let arr = []
