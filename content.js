@@ -64,33 +64,13 @@ function speak() {
     debug('reading...')
     let tEl = S('h1')
 
-    let cEl
-    for (let id of ['cont-text', 'chaptercontent', 'content', 'BookText']) {
-        cEl = $(id)
-        if (cEl) break
-    }
+    let cEl = getContentEl()
     if (!cEl) return
-
-    // 获取需要朗读的文字
-    let title = '', content = ''
-    if (tEl) title = tEl.innerText?.trim()
-    if (cEl) content = cEl.innerText?.trim()
-    if (!content) return
-
-    // 判断内容是否为小说内容
-    if (cEl.getElementsByTagName('img').length > 0) return // 有图片
-    if (cEl.getElementsByTagName('h1').length > 0) return // 排除
-    if (cEl.innerText.length < 100) return // 内容太少
-    let nodes = cEl.childNodes
-    if (nodes.length < 1) return
-    // let firstNode = cEl.firstChild
-    // if (firstNode.nodeName !== '#text') return
-    // if (firstNode.nodeValue.trim().length < 1) return
-    // if (firstNode.nextSibling.nodeName !== 'BR') return
 
     // 遍历定位朗读
     let sel = window.getSelection()
     let range = document.createRange()
+    let nodes = cEl.childNodes
     if (nodeIndex >= nodes.length) toNext()
     let isText = false // 是否有文本内容
     while (nodeIndex < nodes.length) {
@@ -127,6 +107,7 @@ function speak() {
 
             // 朗读内容
             if (first) {
+                let title = tEl ? tEl.innerText.trim() : ''
                 text = (title + '\n' + text).trim()
                 first = false
             }
@@ -135,6 +116,58 @@ function speak() {
         }
     }
     if (!isText) toNext() // 如果循环全部节点都没文本，就翻页
+}
+
+// 获取正确的小说内容元素
+function getContentEl() {
+    let el
+    for (let id of ['cont-text', 'chaptercontent', 'content', 'BookText']) {
+        el = $(id) // 精准类型小说网站
+        if (el) break
+    }
+
+    // 检测是不是正确的小说内容
+    let checkContent = function (el) {
+        if (el.innerText && el.innerText.length < 100) return false // 小于 100 字
+        if (el.getElementsByTagName('img').length > 0) return false // 含有图片
+        if (el.querySelectorAll('h1,h2,h3,h4,h5,h6').length > 0) return false // 含有标题标签
+        if (el.querySelectorAll('ul,li,dl,dt,dd').length > 0) return false // 含有列表标签
+        return true
+    }
+
+    if (el && checkContent(el)) return el
+
+    // 模糊匹配，较耗资源
+    let arr = []
+    A('[id]').forEach(el => {
+        if (checkContent(el)) arr.push(el) // 看一下合规的元素有多少
+    })
+    if (arr.length === 1) return arr[0] // 如果只有一个，就直接返回
+
+    // 超级模糊匹配，更耗资源
+    if (arr.length === 0) {
+        A('div').forEach(el => {
+            if (checkContent(el)) arr.push(el) // 看一下合规的元素有多少
+        })
+        if (arr.length === 1) return arr[0] // 如果只有一个，就直接返回
+    }
+
+    // 有多个，那就进行排序筛选
+    let checkLine = function (el) {
+        let n = 0
+        el.childNodes.forEach(e => {
+            if (e.nodeName === 'P') n++
+            else if (e.nodeName === '#text' && e.textContent.trim()) n++
+            else if (e.nodeName === 'DIV' && e.className === '') n++
+        })
+        return n
+    }
+    if (arr.length > 1) {
+        arr.sort((a, b) => b.innerText.length - a.innerText.length) // 字符大小排序
+        arr.sort((a, b) => checkLine(b) - checkLine(a)) // 有效段落排序
+        return arr[0]
+    }
+    return null
 }
 
 // 跳转到下一章
