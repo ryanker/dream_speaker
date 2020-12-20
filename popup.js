@@ -46,11 +46,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 初始值
-    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch'], function (r) {
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch', 'allowSelect'], function (r) {
         if (r.isScribble) S('input[name="isScribble"]').checked = true
         if (r.autoSpeak) S('input[name="autoSpeak"]').checked = true
         if (r.enablePreload) S('input[name="enablePreload"]').checked = true
         if (r.superMatch) S('input[name="superMatch"]').checked = true
+        if (r.allowSelect) S('input[name="allowSelect"]').checked = true
     })
 
     // 绑定事件

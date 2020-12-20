@@ -30,7 +30,7 @@ document.addEventListener('mouseup', function () {
 
 // 加载设置
 function loadStorage(callback) {
-    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch'], function (r) {
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch', 'allowSelect'], function (r) {
         conf = r
         typeof callback === 'function' && callback()
     })
@@ -57,6 +57,9 @@ function init() {
             if (nextHref) preloadNext(nextHref)
         }, 1500)
     }
+
+    // 解禁页面限制
+    conf.allowSelect && allowUserSelect()
 }
 
 // 朗读文本
@@ -226,6 +229,30 @@ function preloadNext(nextHref) {
     }).catch(err => {
         debug(err)
     })
+}
+
+function allowUserSelect() {
+    if (window.dmxAllowUserSelect) return
+    let sty = document.createElement('style')
+    sty.textContent = `* {-webkit-user-select:text!important;-moz-user-select:text!important;user-select:text!important}`
+    document.head.appendChild(sty)
+
+    let onAllow = function (el, event) {
+        if (el.getAttribute && el.getAttribute(event)) el.setAttribute(event, () => true)
+    }
+    let onClean = function (e) {
+        e.stopPropagation()
+        let el = e.target
+        while (el) {
+            onAllow(el, 'on' + e.type)
+            el = el.parentNode
+        }
+    }
+    onAllow(document, 'oncontextmenu')
+    onAllow(document, 'onselectstart')
+    document.addEventListener('contextmenu', onClean, true)
+    document.addEventListener('selectstart', onClean, true)
+    window.dmxAllowUserSelect = true
 }
 
 function httpGet(url, type, headers) {
