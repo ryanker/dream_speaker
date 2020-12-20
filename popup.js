@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 绑定事件
+    let removeSpeakHost = function () {
+        chrome.storage.local.set({autoSpeakHost: ''}) // 清空自动朗读时记录的域名
+    }
     let selectEl = document.querySelectorAll('select')
     selectEl.forEach(el => {
         let key = el.getAttribute('key')
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
     speak_play.onclick = function () {
+        removeSpeakHost()
         bg.currentTabMessage({action: 'speakStart'})
         speak_pause.innerText = '暂停朗读'
     }
@@ -41,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     speak_stop.onclick = function () {
+        removeSpeakHost()
         bg.stop()
         speak_pause.innerText = '暂停朗读'
     }

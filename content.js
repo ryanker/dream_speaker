@@ -30,7 +30,7 @@ document.addEventListener('mouseup', function () {
 
 // 加载设置
 function loadStorage(callback) {
-    chrome.storage.local.get(['isScribble', 'autoSpeak', 'enablePreload', 'superMatch', 'allowSelect'], function (r) {
+    chrome.storage.local.get(['isScribble', 'autoSpeak', 'autoSpeakHost', 'enablePreload', 'superMatch', 'allowSelect'], function (r) {
         conf = r
         typeof callback === 'function' && callback()
     })
@@ -69,6 +69,13 @@ function speak() {
 
     let cEl = getContentEl()
     if (!cEl) return
+
+    // 第一次自动朗读时，记录域名，防止访问其他网站时，覆盖朗读进度
+    if (!conf.autoSpeakHost) {
+        conf.autoSpeakHost = location.host
+        chrome.storage.local.set({autoSpeakHost: conf.autoSpeakHost}) // 记录域名
+    }
+    if (location.host !== conf.autoSpeakHost) return // 域名不匹配，不朗读
 
     // 遍历定位朗读
     let sel = window.getSelection()
