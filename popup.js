@@ -33,21 +33,27 @@ document.addEventListener('DOMContentLoaded', function () {
     speak_play.onclick = function () {
         removeSpeakHost()
         bg.currentTabMessage({action: 'speakStart'})
-        speak_pause.innerText = '暂停朗读'
+        resetPause()
+    }
+    if (localStorage.getItem('pause')) speak_pause.innerText = '恢复朗读'
+    let resetPause = function () {
+        this.innerText = '暂停朗读'
+        localStorage.setItem('pause', '')
     }
     speak_pause.onclick = function () {
         if (this.innerText === '暂停朗读') {
             bg.pause()
             this.innerText = '恢复朗读'
+            localStorage.setItem('pause', '1')
         } else {
             bg.resume()
-            this.innerText = '暂停朗读'
+            resetPause()
         }
     }
     speak_stop.onclick = function () {
         removeSpeakHost()
         bg.stop()
-        speak_pause.innerText = '暂停朗读'
+        resetPause()
     }
 
     // 初始值
