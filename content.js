@@ -91,7 +91,10 @@ function speak() {
         if (node.nodeName === '#text') {
             text = node.textContent.trim()
         } else if (node.nodeName === 'P') {
-            node.querySelector('span.review-count')?.remove() // 去掉起点小说的评论数
+            // 去掉起点小说的评论数
+            let rcEl = node.querySelector('span.review-count')
+            if (rcEl) rcEl.remove()
+
             text = node.innerText.trim()
         } else if (node.nodeName === 'DIV' && node.className === '') {
             text = node.innerText.trim()
@@ -106,7 +109,8 @@ function speak() {
             sel.addRange(range)
 
             // 定位滚动条位置
-            let s = sel.toString()?.trim()
+            let s = sel.toString()
+            if (s) s = s.trim()
             if (s) {
                 let sRange = sel.getRangeAt(0)
                 if (sRange) {
@@ -156,7 +160,7 @@ function getContentEl() {
         if (el.querySelectorAll('h1,h2,h3,h4,h5,h6').length > 0) return false // 含有标题标签
         if (el.querySelectorAll('ul,li,dl,dt,dd').length > 0) return false // 含有列表标签
         if (el.querySelectorAll('style,table').length > 0) return false // 排除样式和表格
-        if (el.className?.includes('copy')) return false // 排除版权信息
+        if (el.className && el.className.includes('copy')) return false // 排除版权信息
         return getLines(el) > 1
     }
 
@@ -212,7 +216,7 @@ function getNextHref() {
     let aEl = A('a[href]')
     for (let i = 0; i < aEl.length; i++) {
         let el = aEl[i]
-        let text = el.innerText?.trim()
+        let text = el.innerText.trim()
         if (el.id === 'next' || ['下一章', '下一页'].includes(text)) {
             let url = el.getAttribute('href')
             if (url.length > 11 && url.substring(0, 11) === 'javascript:') return ''
@@ -233,8 +237,9 @@ function preloadNext(nextHref) {
     httpGet(nextHref, 'document').then(r => {
         let el = r.querySelector('body')
         if (el) {
+            let tEl = r.querySelector('title')
+            nextTitle = tEl ? tEl.innerText : ''
             nextBody = el.innerHTML
-            nextTitle = r.querySelector('title')?.innerText
         }
         // console.log(nextHref, r.querySelector('h1').innerText, nextBody.length)
         // setTimeout(toNext, 10000)
