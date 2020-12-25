@@ -59,7 +59,7 @@ function init() {
         }, 1500)
     }
 
-    // 解禁页面限制
+    // 解除页面限制
     conf.allowSelect && allowUserSelect()
 }
 
