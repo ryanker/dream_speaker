@@ -66,8 +66,6 @@ function init() {
 // 朗读文本
 function speak() {
     debug('reading...')
-    let tEl = S('h1')
-
     let cEl = getContentEl()
     if (!cEl) return
 
@@ -119,9 +117,12 @@ function speak() {
 
             // 朗读内容
             if (first) {
-                let title = tEl ? tEl.innerText.trim() : ''
-                text = (title + '\n' + text).trim()
                 first = false
+                let tEl = S('h1')
+                if (tEl) {
+                    let title = tEl.innerText.trim()
+                    if (title) text = title + '\n' + text
+                }
             }
             sendMessage({action: 'speak', text: text})
             break

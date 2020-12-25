@@ -3,6 +3,7 @@ let bg = chrome.extension.getBackgroundPage()
 let conf = bg.conf
 let langList = bg.langList
 let voiceList = bg.voiceList
+let ttsStatus = bg.ttsStatus
 
 document.addEventListener('DOMContentLoaded', function () {
     let speak_voice = $('speak_voice')
@@ -33,27 +34,22 @@ document.addEventListener('DOMContentLoaded', function () {
     speak_play.onclick = function () {
         removeSpeakHost()
         bg.currentTabMessage({action: 'speakStart'})
-        resetPause()
+        speak_pause.innerText = '暂停朗读'
     }
-    if (localStorage.getItem('pause')) speak_pause.innerText = '恢复朗读'
-    let resetPause = function () {
-        this.innerText = '暂停朗读'
-        localStorage.setItem('pause', '')
-    }
+    if (ttsStatus === 'pause') speak_pause.innerText = '恢复朗读'
     speak_pause.onclick = function () {
         if (this.innerText === '暂停朗读') {
             bg.pause()
-            this.innerText = '恢复朗读'
-            localStorage.setItem('pause', '1')
+            speak_pause.innerText = '恢复朗读'
         } else {
             bg.resume()
-            resetPause()
+            speak_pause.innerText = '暂停朗读'
         }
     }
     speak_stop.onclick = function () {
         removeSpeakHost()
         bg.stop()
-        resetPause()
+        speak_pause.innerText = '暂停朗读'
     }
 
     // 初始值

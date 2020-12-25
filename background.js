@@ -1,7 +1,7 @@
 'use strict'
 
 var isDebug = false
-var conf = {}, langList = {}, voiceList = {}
+var conf = {}, langList = {}, voiceList = {}, ttsStatus = ''
 document.addEventListener('DOMContentLoaded', function () {
     // 读取配置
     loadConf()
@@ -104,6 +104,7 @@ function debug(...data) {
 
 // 开始朗读
 function speak(text) {
+    ttsStatus = 'speak'
     return new Promise((resolve, reject) => {
         chrome.tts.isSpeaking(function (speaking) {
             if (speaking) stop()
@@ -145,17 +146,20 @@ function speak(text) {
 
 // 停止朗读
 function stop() {
+    ttsStatus = 'stop'
     chrome.browserAction.setBadgeText({text: ''})
     chrome.tts.stop()
 }
 
 // 暂停朗读
 function pause() {
+    ttsStatus = 'pause'
     chrome.tts.pause()
 }
 
 // 恢复朗读
 function resume() {
+    ttsStatus = 'resume'
     chrome.tts.resume()
 }
 
