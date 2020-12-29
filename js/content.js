@@ -175,9 +175,6 @@ function getContentEl() {
 
     if (el && checkContent(el)) return el
 
-    // 开启自动朗读，并关闭超强识别时
-    if (setting.autoSpeak && !setting.superMatch) return null
-
     // 模糊匹配，较耗资源
     let arr = []
     // A('div[id]').forEach(el => {
