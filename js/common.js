@@ -137,6 +137,47 @@ function httpGet(url, type, headers) {
     })
 }
 
+function httpPost(options) {
+    let o = Object.assign({
+        url: '',
+        responseType: 'json',
+        type: 'form',
+        body: null,
+        timeout: 30000,
+        headers: [],
+    }, options)
+    return new Promise((resolve, reject) => {
+        let c = new XMLHttpRequest()
+        c.responseType = o.responseType
+        c.timeout = o.timeout
+        c.onload = function (e) {
+            if (this.status === 200 && this.response !== null) {
+                resolve(this.response)
+            } else {
+                reject(e)
+            }
+        }
+        c.ontimeout = function (e) {
+            reject('NETWORK_TIMEOUT', e)
+        }
+        c.onerror = function (e) {
+            reject('NETWORK_ERROR', e)
+        }
+        c.open("POST", o.url)
+        if (o.type === 'form') {
+            c.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+        } else if (o.type === 'json') {
+            c.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
+        } else if (o.type === 'xml') {
+            c.setRequestHeader("Content-Type", "application/ssml+xml")
+        }
+        o.headers.length > 0 && o.headers.forEach(v => {
+            c.setRequestHeader(v.name, v.value)
+        })
+        c.send(o.body)
+    })
+}
+
 function debug(...data) {
     isDebug && console.log('[DEBUG]', ...data)
 }

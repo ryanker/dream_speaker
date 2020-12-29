@@ -69,6 +69,8 @@ function speakPlay(text) {
         return localTTS(text, lang, voiceName)
     } else if (type === 'baidu') {
         return bauduTTS(text, lang)
+    } else if (type === 'baiduAi') {
+        return baiduAiTTS(text, lang)
     } else if (type === 'google') {
         return googleTTS(text, lang)
     } else if (type === 'youdao') {
@@ -158,6 +160,41 @@ function bauduTTS(text, lang) {
             arr.push(getUrl(s))
         })
         queuePlay(arr).then(r => resolve(r)).catch(err => reject(err))
+    })
+}
+
+function baiduAiTTS(text, per) {
+    console.log(text, per)
+    return new Promise((resolve, reject) => {
+        (async () => {
+            let arr = sliceStr(text, 128)
+            for (let j = 0; j < arr.length; j++) {
+                let err = false
+                let errMsg = null
+                for (let i = 0; i < 3; i++) {
+                    let data = ''
+                    await httpPost({
+                        url: `https://ai.baidu.com/aidemo`,
+                        body: `type=tns&spd=5&pit=5&vol=5&per=${per}&tex=${arr[j]}&aue=6`
+                    }).then(r => {
+                        if (r.msg === 'success') data = r.data
+                    }).catch(e => {
+                        err = true
+                        errMsg = e
+                    })
+                    if (err) continue
+
+                    await playAudio(data).catch(e => {
+                        err = true
+                        errMsg = e
+                    })
+                    if (!err) break
+                    await sleep(500) // 延迟 0.5 秒
+                }
+                if (err) return reject(errMsg) // 重试播放全部失败，就终止播放
+            }
+            resolve() // 播放完成
+        })()
     })
 }
 
