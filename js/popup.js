@@ -1,7 +1,7 @@
 'use strict'
 let bg = B.getBackgroundPage()
 let setting = bg.setting
-let langList = {}, speakList = []
+let langList = {}, speakList = [{key: '', val: '默认'}]
 
 let speak_voice = $('speak_voice')
 let speak_play = $('speak_play')
@@ -34,12 +34,25 @@ document.addEventListener('DOMContentLoaded', async function () {
     // console.log(speakList)
 
     // 生成下拉框显示
-    speakList.forEach(v => {
-        let el = document.createElement('option')
-        el.value = v.key
-        el.innerText = v.val
-        speak_voice.appendChild(el)
-    })
+    let initVoiceSelect = function () {
+        speak_voice.innerText = ''
+        speakList.forEach(v => {
+            if (setting.speakLang && !inArray(setting.speakLang, v.val)) return // 排除其他语言
+            let el = document.createElement('option')
+            el.value = v.key
+            el.innerText = v.val
+            speak_voice.appendChild(el)
+        })
+
+        // 初始设置
+        if (setting.speakName && speak_voice.querySelector(`option[value="${setting.speakName}"]`)) {
+            speak_voice.value = setting.speakName
+        } else {
+            let firstEl = speak_voice.querySelector(`option`)
+            if (firstEl) firstEl.click()
+        }
+    }
+    setTimeout(initVoiceSelect, 10)
 
     // 初始设置 & 绑定事件
     A('select[name]').forEach(el => {
@@ -47,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (setting[name]) el.value = setting[name] // 初始设置
         el.onchange = function () {
             setSetting(name, this.value)
+            if (name === 'speakLang') initVoiceSelect()
         }
     })
     A('input[name]').forEach(el => {

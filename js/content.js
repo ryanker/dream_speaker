@@ -4,8 +4,9 @@ let setting = {}
 let autoSpeakHost = ''
 let first, nodeIndex, nextHref, nextBody, nextTitle
 document.addEventListener('DOMContentLoaded', async function () {
-    await storageLocalGet(['setting']).then(r => {
+    await storageLocalGet(['setting', 'autoSpeakHost']).then(r => {
         setting = r.setting || {} // 设置信息
+        autoSpeakHost = r.autoSpeakHost // 自动播放记录的域名
     })
 
     init()
@@ -30,8 +31,8 @@ B.storage.onChanged.addListener(function (data) {
         let v = data[k].newValue
         if (k === 'setting') {
             setting = v
-        } else {
-
+        } else if (k === 'autoSpeakHost') {
+            autoSpeakHost = v
         }
         debug('new:', k, v)
     })
