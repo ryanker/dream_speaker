@@ -110,10 +110,11 @@ function localTTS(text, lang, voiceName) {
             if (isSpeaking) B.tts.stop()
 
             let options = {}
-            if (lang) options.lang = setting.lang
-            if (voiceName) options.voiceName = setting.voiceName
+            if (lang) options.lang = lang
+            if (voiceName) options.voiceName = voiceName
             if (setting.rate) options.rate = Number(setting.rate)
             if (setting.pitch) options.pitch = Number(setting.pitch)
+            // console.log(options)
             let arr = sliceStr(text, 128)
             let lastKey = arr.length - 1
             arr.forEach((v, k) => {
