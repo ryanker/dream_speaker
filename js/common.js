@@ -1,7 +1,7 @@
 'use strict'
 
 const isDebug = false
-const isFirefox = navigator.userAgent.includes("Firefox")
+const isFirefox = inArray("Firefox", navigator.userAgent)
 const B = {
     getBackgroundPage: chrome.extension.getBackgroundPage,
     id: chrome.runtime.id,
