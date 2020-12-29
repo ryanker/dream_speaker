@@ -65,6 +65,7 @@ function speakPlay(text) {
     if (!speakName) speakName = isFirefox ? 'baidu:zh' : 'local'
     let [type, lang, voiceName] = speakName.split(':')
     playOptions.type = type
+    setBrowserAction('读')
     if (type === 'local') {
         return localTTS(text, lang, voiceName)
     } else if (type === 'baidu') {
@@ -86,6 +87,7 @@ function speakPlay(text) {
 function speakPause() {
     playOptions.status = 'pause'
     playOptions.type === 'local' ? B.tts.pause() : audio.pause()
+    setBrowserAction('')
 }
 
 // 恢复朗读
@@ -127,7 +129,6 @@ function localTTS(text, lang, voiceName) {
                     if (e.type === 'end') {
                         debug('end:', k, lastKey)
                         if (k === lastKey) {
-                            setBrowserAction('')
                             resolve()
                         }
                     } else if (e.type === 'error') {
@@ -137,7 +138,6 @@ function localTTS(text, lang, voiceName) {
                     // })(e, k)
                 }
                 if (k === 0) {
-                    setBrowserAction('读')
                     B.tts.speak(v, options)
                 } else {
                     B.tts.speak(v, Object.assign({enqueue: true}, options))
