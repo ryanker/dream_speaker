@@ -164,7 +164,6 @@ function bauduTTS(text, lang) {
 }
 
 function baiduAiTTS(text, per) {
-    console.log(text, per)
     return new Promise((resolve, reject) => {
         (async () => {
             let arr = sliceStr(text, 128)
