@@ -17,7 +17,9 @@ B.contextMenus.create({
     "title": "朗读“%s”",
     "contexts": ["selection"],
     "onclick": function (info) {
-        speakPlay(info.selectionText).catch(err => {
+        speakPlay(info.selectionText).then(() => {
+            setBrowserAction('')
+        }).catch(err => {
             debug('speak error:', err)
             notifications('朗读出错', '右键朗读出错')
         })
@@ -35,12 +37,15 @@ B.onMessage.addListener(function (m, sender, sendResponse) {
     if (m.action === 'speak') {
         speakPlay(m.text).then(() => {
             sendTabMessage(tabId, {action: 'speak'})
+            setBrowserAction('')
         }).catch(err => {
             debug('speak error:', err)
             notifications('朗读出错', '朗读小说出错')
         })
     } else if (m.action === 'scribbleSpeak') {
-        speakPlay(m.text).catch(err => {
+        speakPlay(m.text).then(() => {
+            setBrowserAction('')
+        }).catch(err => {
             debug('speak error:', err)
             notifications('朗读出错', '划词朗读出错')
         })
