@@ -1,14 +1,15 @@
 {
   "name": "梦想小说朗读助手",
   "description": "一款简单的小说朗读助手，支持数百小说网站自动朗读功能，同时支持右键朗读和划词朗读。",
-  "version": "1.6",
+  "version": "1.7",
   "manifest_version": 2,
   "icons": {
     "128": "128.png"
   },
   "background": {
     "scripts": [
-      "background.js"
+      "js/common.js",
+      "js/background.js"
     ]
   },
   "content_scripts": [
@@ -17,9 +18,10 @@
         "\u003Call_urls>"
       ],
       "js": [
-        "content.js"
+        "js/common.js",
+        "js/content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "browser_action": {
@@ -35,7 +37,6 @@
     "\u003Call_urls>"
   ],
   "homepage_url": "http://www.ddmx.com",
-  "update_url": "https://clients2.google.com/service/update2/crx",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

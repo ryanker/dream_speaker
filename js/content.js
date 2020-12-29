@@ -1,43 +1,51 @@
 'use strict'
 
-let isDebug = false
-let conf = {}
+let setting = {}
+let autoSpeakHost = ''
 let first, nodeIndex, nextHref, nextBody, nextTitle
-loadStorage(function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    await storageLocalGet(['setting']).then(r => {
+        setting = r.setting || {} // 设置信息
+    })
+
     init()
 })
 
-chrome.runtime.onMessage.addListener(function (m) {
+B.onMessage.addListener(function (m) {
     debug('m:', m)
     if (m.action === 'speak') {
         speak()
     } else if (m.action === 'speakStart') {
         first = true
         nodeIndex = 0
-        conf.autoSpeakHost = '' // 初始
+        autoSpeakHost = '' // 初始为空
         speak()
-    } else if (m.action === 'loadStorage') {
-        loadStorage()
     }
+})
+
+// 监听设置修改
+B.storage.onChanged.addListener(function (data) {
+    let keys = Object.keys(data)
+    keys.forEach(k => {
+        let v = data[k].newValue
+        if (k === 'setting') {
+            setting = v
+        } else {
+
+        }
+        debug('new:', k, v)
+    })
 })
 
 // 划词朗读
 document.addEventListener('mouseup', function () {
-    if (!conf.isScribble) return
+    if (!setting.isScribble) return
     let text = getSelection().toString().trim()
     if (!text) return
     sendMessage({action: 'scribbleSpeak', text: text})
 })
 
-// 加载设置
-function loadStorage(callback) {
-    chrome.storage.local.get(['isScribble', 'autoSpeak', 'autoSpeakHost', 'enablePreload', 'superMatch', 'allowSelect'], function (r) {
-        conf = r
-        typeof callback === 'function' && callback()
-    })
-}
-
-// 初始化参数
+// 初始化
 function init() {
     first = true
     nodeIndex = 0
@@ -45,14 +53,14 @@ function init() {
     nextBody = null
 
     // 是否自动开始朗读
-    if (conf.autoSpeak) {
+    if (setting.autoSpeak) {
         setTimeout(() => {
             speak()
         }, 1000)
     }
 
     // 预加载下一页
-    if (conf.enablePreload) {
+    if (setting.enablePreload) {
         setTimeout(() => {
             nextHref = getNextHref()
             if (nextHref) preloadNext(nextHref)
@@ -60,7 +68,7 @@ function init() {
     }
 
     // 解除页面限制
-    conf.allowSelect && allowUserSelect()
+    setting.allowSelect && allowUserSelect()
 }
 
 // 朗读文本
@@ -70,11 +78,11 @@ function speak() {
     if (!cEl) return
 
     // 第一次自动朗读时，记录域名，防止访问其他网站时，覆盖朗读进度
-    if (!conf.autoSpeakHost) {
-        conf.autoSpeakHost = location.host
-        chrome.storage.local.set({autoSpeakHost: conf.autoSpeakHost}) // 记录域名
+    if (!autoSpeakHost) {
+        autoSpeakHost = location.host
+        storageLocalSet({autoSpeakHost}) // 记录域名
     }
-    if (location.host !== conf.autoSpeakHost) return // 域名不匹配，不朗读
+    if (location.host !== autoSpeakHost) return // 域名不匹配，不朗读
 
     // 遍历定位朗读
     let sel = window.getSelection()
@@ -167,14 +175,14 @@ function getContentEl() {
     if (el && checkContent(el)) return el
 
     // 开启自动朗读，并关闭超强识别时
-    if (conf.autoSpeak && !conf.superMatch) return null
+    if (setting.autoSpeak && !setting.superMatch) return null
 
     // 模糊匹配，较耗资源
     let arr = []
-    A('div[id]').forEach(el => {
-        if (checkContent(el)) arr.push(el) // 看一下合规的元素有多少
-    })
-    if (arr.length === 1) return arr[0] // 如果只有一个，就直接返回
+    // A('div[id]').forEach(el => {
+    //     if (checkContent(el)) arr.push(el) // 看一下合规的元素有多少
+    // })
+    // if (arr.length === 1) return arr[0] // 如果只有一个，就直接返回
 
     // 超级模糊匹配，更耗资源
     if (arr.length === 0) {
@@ -195,16 +203,14 @@ function getContentEl() {
 
 // 跳转到下一章
 function toNext() {
-    if (conf.enablePreload && nextBody) {
+    if (setting.enablePreload && nextBody) {
         let el = S('body')
         if (!el) return
         el.innerHTML = nextBody // 修改页面内容
         S('title').innerText = nextTitle // 修改页面标题
         document.scrollingElement.scrollTop = 0 // 返回顶部
         history.pushState(null, nextTitle, nextHref) // 修改 URL
-        setTimeout(() => {
-            init() // 初始化
-        }, 800)
+        setTimeout(init, 500)
     } else {
         if (!nextHref) nextHref = getNextHref()
         if (nextHref) location.href = nextHref
@@ -272,45 +278,6 @@ function allowUserSelect() {
     window.dmxAllowUserSelect = true
 }
 
-function httpGet(url, type, headers) {
-    return new Promise((resolve, reject) => {
-        let c = new XMLHttpRequest()
-        c.responseType = type || 'text'
-        c.timeout = 30000
-        c.onload = function (e) {
-            if (this.status === 200) {
-                resolve(this.response)
-            } else {
-                reject(e)
-            }
-        }
-        c.ontimeout = function (e) {
-            reject('NETWORK_TIMEOUT', e)
-        }
-        c.onerror = function (e) {
-            reject('NETWORK_ERROR', e)
-        }
-        c.open("GET", url)
-        headers && headers.forEach(v => {
-            c.setRequestHeader(v.name, v.value)
-        })
-        c.send()
-    })
-}
-
-function sendMessage(message) {
-    return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage(message, function (response) {
-            let err = chrome.runtime.lastError
-            if (err) {
-                reject(err)
-            } else {
-                resolve(response)
-            }
-        })
-    })
-}
-
 function $(id) {
     return document.getElementById(id)
 }
@@ -321,8 +288,4 @@ function S(selector) {
 
 function A(selector) {
     return document.querySelectorAll(selector)
-}
-
-function debug(...data) {
-    isDebug && console.log('[DEBUG]', ...data)
 }

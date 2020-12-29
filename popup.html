@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Popup</title>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="css/popup.css">
 </head>
 <body>
 <div class="box fx">
     朗读名称
-    <select id="speak_voice" key="voiceName">
+    <select id="speak_voice" name="speakName">
         <option value="">默认</option>
     </select>
 </div>
 <div class="box fx">
     朗读速度
-    <select key="rate">
+    <select name="rate">
         <option value="">默认</option>
         <option value="0.5">0.5X</option>
         <option value="0.75">0.75X</option>
@@ -30,7 +30,7 @@
 </div>
 <div class="box fx">
     朗读音高
-    <select key="pitch">
+    <select name="pitch">
         <option value="">默认</option>
         <option value="0.5">0.5</option>
         <option value="0.75">0.75</option>
@@ -70,5 +70,6 @@
 <div id="speak_pause" class="dmx_button dmx_button_warning mt_1">暂停朗读</div>
 <div id="speak_stop" class="dmx_button dmx_button_danger mt_1">停止朗读</div>
 </body>
-<script src="popup.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/popup.js"></script>
 </html>
