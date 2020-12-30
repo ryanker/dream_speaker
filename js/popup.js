@@ -55,15 +55,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     setTimeout(initVoiceSelect, 10)
 
     // 初始设置 & 绑定事件
-    A('select[name]').forEach(el => {
+    A('select[name],input[name="limitWords"]').forEach(el => {
         let name = el.getAttribute('name')
+        if (!setting.limitWords) setting.limitWords = 200 // 默认值 200
         if (setting[name]) el.value = setting[name] // 初始设置
         el.onchange = function () {
-            setSetting(name, this.value)
+            let val = this.value
+            if (name === 'limitWords' && (isNaN(Number(val)) || val < 100)) {
+                val = 100 // 限制不能小于100
+                this.value = val
+            }
+            setSetting(name, val)
             if (name === 'speakLang') initVoiceSelect()
         }
     })
-    A('input[name]').forEach(el => {
+    A('input[type=checkbox][name]').forEach(el => {
         let name = el.getAttribute('name')
         if (setting[name]) el.checked = setting[name] // 初始设置
         el.onclick = function () {

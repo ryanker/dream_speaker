@@ -20,6 +20,15 @@ input[type=radio], input[type=checkbox] {
     bottom: -4px;
 }
 
+input[type=text] {
+    width: 60px;
+    height: 22px;
+    margin: 0 0 0 5px;
+    padding: 0 5px;
+    border: 1px solid #646464;
+    border-radius: 5px;
+}
+
 select {
     min-width: 100px;
     max-width: 360px;

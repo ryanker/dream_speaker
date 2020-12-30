@@ -164,7 +164,8 @@ function getContentEl() {
     }
     let checkContent = function (el) {
         if (!el.innerText) return false
-        if (el.innerText.trim().length < 100) return false // 小于 100 字
+        let limitWords = setting.limitWords || 200
+        if (el.innerText.trim().length < limitWords) return false // 限制字数
         // if (el.getElementsByTagName('img').length > 0) return false // 含有图片
         if (el.querySelectorAll('h1,h2,h3,h4,h5,h6').length > 0) return false // 含有标题标签
         if (el.querySelectorAll('ul,li,dl,dt,dd').length > 0) return false // 含有列表标签
