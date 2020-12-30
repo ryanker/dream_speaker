@@ -137,7 +137,7 @@ function speak() {
                     if (title) text = title + '\n' + text
                 }
             }
-            sendMessage({action: 'speak', text: text})
+            hasWords(text) && sendMessage({action: 'speak', text: text})
             break
         }
     }
