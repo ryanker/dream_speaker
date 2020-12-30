@@ -104,12 +104,9 @@ function speakResume() {
 // 停止朗读
 function speakStop() {
     playOptions.status = 'stop'
-    if (playOptions.type === 'local') {
-        B.tts.stop()
-    } else {
-        audio.pause()
-        audio.currentTime = 0
-    }
+    !isFirefox && B.tts.stop()
+    audio.pause()
+    audio.currentTime = 0
     setBrowserAction('')
 }
 
@@ -261,6 +258,7 @@ function queuePlay(arr) {
             let errMsg = null
             let delay = 500
             for (let i = 0; i < 20; i++) {
+                if (playOptions.status === 'stop') return // 终止执行
                 await playAudio(v).catch(e => {
                     err = true
                     errMsg = e
