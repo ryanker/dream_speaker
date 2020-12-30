@@ -259,15 +259,17 @@ function queuePlay(arr) {
             // console.log('url:', v)
             let err = false
             let errMsg = null
-            for (let i = 0; i < 3; i++) {
+            let delay = 500
+            for (let i = 0; i < 20; i++) {
                 await playAudio(v).catch(e => {
                     err = true
                     errMsg = e
                 })
                 if (!err) break
-                await sleep(500) // 延迟 0.5 秒
+                await sleep(delay) // 延迟重试
+                delay *= 2 // 双倍延迟
             }
-            if (err) return reject(errMsg) // 重试播放全部失败，就终止播放
+            if (err) return reject(errMsg) // 重试播放全部失败，就终止播放 (大约 145 小时)
         }
         resolve()
     })
