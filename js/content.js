@@ -137,8 +137,10 @@ function speak() {
                     if (title) text = title + '\n' + text
                 }
             }
-            hasWords(text) && sendMessage({action: 'speak', text: text})
-            break
+            if (hasWords(text)) {
+                sendMessage({action: 'speak', text: text})
+                break
+            }
         }
     }
     if (!isText) toNext() // 如果循环全部节点都没文本，就翻页
