@@ -107,6 +107,7 @@ function speakStop() {
     !isFirefox && B.tts.stop()
     audio.pause()
     audio.currentTime = 0
+    window.queuePlayTime = 0 // 停止队列中的执行
     setBrowserAction('')
 }
 
@@ -252,14 +253,20 @@ function sogouTTS(text, lang) {
 
 function queuePlay(arr) {
     return new Promise(async (resolve, reject) => {
-        for (let v of arr) {
-            // console.log('url:', v)
+        window.queuePlayTime = Date.now()
+        let t = JSON.parse(JSON.stringify(window.queuePlayTime))
+        for (let url of arr) {
+            // console.log('url:', url)
             let err = false
             let errMsg = null
             let delay = 500
             for (let i = 0; i < 20; i++) {
                 if (playOptions.status !== 'speak') return // 终止执行
-                await playAudio(v).catch(e => {
+                if (window.queuePlayTime !== t) return // 终止执行
+                await playAudio(i === 0 ? url : url + '&t=' + Date.now()).then(() => {
+                    err = false
+                    errMsg = null
+                }).catch(e => {
                     err = true
                     errMsg = e
                 })
