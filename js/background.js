@@ -97,7 +97,7 @@ function speakPause() {
 
 // 恢复朗读
 function speakResume() {
-    playOptions.status = 'resume'
+    playOptions.status = 'speak'
     playOptions.type === 'local' ? B.tts.resume() : audio.play()
 }
 
@@ -258,7 +258,7 @@ function queuePlay(arr) {
             let errMsg = null
             let delay = 500
             for (let i = 0; i < 20; i++) {
-                if (playOptions.status === 'stop') return // 终止执行
+                if (playOptions.status !== 'speak') return // 终止执行
                 await playAudio(v).catch(e => {
                     err = true
                     errMsg = e
