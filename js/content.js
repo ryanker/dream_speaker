@@ -170,8 +170,9 @@ function getContentEl() {
         if (el.innerText.trim().length < limitWords) return false // 限制字数
         // if (el.getElementsByTagName('img').length > 0) return false // 含有图片
         if (el.querySelectorAll('h1,h2,h3,h4,h5,h6').length > 0) return false // 含有标题标签
-        if (el.querySelectorAll('ul,li,dl,dt,dd').length > 0) return false // 含有列表标签
+        if (el.querySelectorAll('ul,ol,li,dl,dt,dd').length > 0) return false // 含有列表标签
         if (el.querySelectorAll('style,table').length > 0) return false // 排除样式和表格
+        if (el.querySelectorAll('form,section,select,input,button').length > 0) return false // 排除表单类标签
         if (el.className && inArray('copy', el.className)) return false // 排除版权信息
         return getLines(el) > 1
     }
