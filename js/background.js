@@ -168,6 +168,7 @@ function bauduTTS(text, lang) {
 
 function baiduAiTTS(text, per) {
     per = per.replace(/^zh-/g, '')
+    // see https://ai.baidu.com/ai-doc/SPEECH/Qk38y8lrl
     // pit	选填	音调，取值0-15，默认为5中语调
     let pit = 5
     let pitArr = {
