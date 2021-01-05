@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     await fetch('conf/speak.json').then(r => r.json()).then(r => {
         r.baidu && pushSpeak(r.baidu, 'baidu') // 百度朗读
+        r.baiduAi && pushSpeak(r.baiduAi, 'baiduAi') // 百度AI朗读
         r.youdao && pushSpeak(r.youdao, 'youdao') // 有道朗读
         r.sogou && pushSpeak(r.sogou, 'sogou') // 搜索朗读
         r.google && pushSpeak(r.google, 'google') // 谷歌朗读
