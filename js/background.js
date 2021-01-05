@@ -168,43 +168,50 @@ function bauduTTS(text, lang) {
 
 function baiduAiTTS(text, per) {
     per = per.replace(/^zh-/g, '')
-    return new Promise((resolve, reject) => {
-        (async () => {
-            let arr = sliceStr(text, 128)
-            for (let tex of arr) {
-                let err = false
-                let errMsg = null
-                for (let i = 0; i < 3; i++) {
-                    let data = ''
-                    await httpPost({
-                        // url: `https://ai.baidu.com/aidemo`,
-                        // body: `type=tns&spd=5&pit=5&vol=5&per=${per}&tex=${tex}&aue=6`,
-                        url: `https://tsn.baidu.com/text2audio`,
-                        body: `tex=${tex}&per=${per}&cuid=baidu_speech_demo&lan=zh&ctp=1&pdt=1&pit=5&spd=5`,
-                        responseType: 'blob'
-                    }).then(r => {
-                        // if (r.msg === 'success') data = r.data
-                        data = r
+    return new Promise(async (resolve, reject) => {
+        window.queuePlayTime = Date.now()
+        let t = JSON.parse(JSON.stringify(window.queuePlayTime))
+        let arr = sliceStr(text, 128)
+        for (let tex of arr) {
+            let err = false
+            let errMsg = null
+            let delay = 500
+            for (let i = 0; i < 20; i++) {
+                if (playOptions.status !== 'speak') return // 终止执行
+                if (window.queuePlayTime !== t) return // 终止执行
+                let data = ''
+                await httpPost({
+                    // url: `https://ai.baidu.com/aidemo`,
+                    // body: `type=tns&spd=5&pit=5&vol=5&per=${per}&tex=${tex}&aue=6`,
+                    url: `https://tsn.baidu.com/text2audio`,
+                    body: `tex=${tex}&per=${per}&cuid=baidu_speech_demo&lan=zh&ctp=1&pdt=1&pit=5&spd=5`,
+                    responseType: 'blob'
+                }).then(r => {
+                    // if (r.msg === 'success') data = r.data
+                    data = r
+
+                    err = false
+                    errMsg = null
+                }).catch(e => {
+                    err = true
+                    errMsg = e
+                })
+                if (!err) {
+                    await playAudio(data).then(() => {
                         err = false
+                        errMsg = null
                     }).catch(e => {
                         err = true
                         errMsg = e
                     })
-                    if (err) {
-                        await sleep(500) // 延迟 0.5 秒
-                        continue
-                    }
-
-                    await playAudio(data).catch(e => {
-                        err = true
-                        errMsg = e
-                    })
-                    if (!err) break
                 }
-                if (err) return reject(errMsg) // 重试播放全部失败，就终止播放
+                if (!err) break
+                await sleep(delay) // 延迟重试
+                delay *= 2 // 双倍延迟
             }
-            resolve() // 播放完成
-        })()
+            if (err) return reject(errMsg) // 重试播放全部失败，就终止播放 (大约 145 小时)
+        }
+        resolve() // 播放完成
     })
 }
 
