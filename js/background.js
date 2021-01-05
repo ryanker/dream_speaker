@@ -168,6 +168,20 @@ function bauduTTS(text, lang) {
 
 function baiduAiTTS(text, per) {
     per = per.replace(/^zh-/g, '')
+    // pit	选填	音调，取值0-15，默认为5中语调
+    let pit = 5
+    let pitArr = {
+        '0.5': 0,
+        '0.75': 3,
+        '1': 5,
+        '1.25': 7,
+        '1.5': 10,
+        '1.75': 12,
+        '2': 15,
+    }
+    let pk = setting.pitch
+    if (pk && pitArr[pk]) pit = pitArr[pk]
+
     return new Promise(async (resolve, reject) => {
         window.queuePlayTime = Date.now()
         let t = JSON.parse(JSON.stringify(window.queuePlayTime))
@@ -184,7 +198,8 @@ function baiduAiTTS(text, per) {
                     // url: `https://ai.baidu.com/aidemo`,
                     // body: `type=tns&spd=5&pit=5&vol=5&per=${per}&tex=${tex}&aue=6`,
                     url: `https://tsn.baidu.com/text2audio`,
-                    body: `tex=${tex}&per=${per}&cuid=baidu_speech_demo&lan=zh&ctp=1&pdt=1&pit=5&spd=5`,
+                    // body: `tex=${tex}&per=${per}&cuid=baidu_speech_demo&lan=zh&ctp=1&pdt=1&pit=5&spd=5`,
+                    body: `tex=${tex}&per=${per}&cuid=baike&lan=ZH&ctp=1&pdt=31&pit=${pit}&spd=5`,
                     responseType: 'blob'
                 }).then(r => {
                     // if (r.msg === 'success') data = r.data
