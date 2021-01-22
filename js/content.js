@@ -90,7 +90,7 @@ function speak() {
     let range = document.createRange()
     let nodes = cEl.childNodes
     if (nodeIndex >= nodes.length) toNext()
-    let isText = false // 是否有文本内容
+    let isText = false // 是否有文字（排除全符号内容）
     while (nodeIndex < nodes.length) {
         let node = nodes[nodeIndex]
         nodeIndex++
@@ -109,8 +109,6 @@ function speak() {
             text = node.innerText.trim()
         }
         if (text) {
-            isText = true
-
             // 定位选区
             range.selectNode(node)
             // console.log('length:', nodeIndex, text.length)
@@ -138,6 +136,7 @@ function speak() {
                 }
             }
             if (hasWords(text)) {
+                isText = true
                 sendMessage({action: 'speak', text: text})
                 break
             }
