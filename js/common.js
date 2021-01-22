@@ -178,7 +178,7 @@ function httpPost(options) {
     })
 }
 
-// 判断字符串中是否有文字，主要未过滤全字符字符串
+// 判断字符串中是否有文字，主要未过滤全符号字符串
 function hasWords(s) {
     return /[a-zA-Z\d]/.test(s) || /\p{Unified_Ideograph}/u.test(s)
 }
