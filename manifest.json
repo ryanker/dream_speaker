@@ -1,7 +1,7 @@
 {
   "name": "梦想小说朗读助手",
   "description": "一款简单的小说朗读助手，支持数百小说网站自动朗读功能，同时支持右键朗读和划词朗读。",
-  "version": "1.17",
+  "version": "1.18",
   "manifest_version": 2,
   "icons": {
     "128": "128.png"
