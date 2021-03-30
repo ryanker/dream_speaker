@@ -195,12 +195,26 @@ function baiduAiTTS(text, per) {
                 if (playOptions.status !== 'speak') return // 终止执行
                 if (window.queuePlayTime !== t) return // 终止执行
                 let data = ''
-                await httpPost({
+
+                let url = `https://tts.baidu.com/text2audio?tex=${tex}&cuid=baidu_speech_demo&lan=ZH&ctp=1&pdt=301&vol=9&rate=32&per=${per}&pit=${pit}`
+                await httpGet(url, 'blob').then(r => {
+                    // if (r.msg === 'success') data = r.data
+                    data = r
+
+                    err = false
+                    errMsg = null
+                }).catch(e => {
+                    err = true
+                    errMsg = e
+                })
+
+                /*await httpPost({
                     // url: `https://ai.baidu.com/aidemo`,
                     // body: `type=tns&spd=5&pit=5&vol=5&per=${per}&tex=${tex}&aue=6`,
-                    url: `https://tsn.baidu.com/text2audio`,
+                    url: `https://tts.baidu.com/text2audio`,
                     // body: `tex=${tex}&per=${per}&cuid=baidu_speech_demo&lan=zh&ctp=1&pdt=1&pit=5&spd=5`,
-                    body: `tex=${tex}&per=${per}&cuid=baike&lan=ZH&ctp=1&pdt=31&pit=${pit}&spd=5`,
+                    // body: `tex=${tex}&per=${per}&cuid=baike&lan=zh&ctp=1&pdt=301&pit=${pit}&spd=5`,
+                    body: `tex=${tex}&spd=5&per=${per}&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=301&vol=5&pit=${pit}&_res_tag_=audio`,
                     responseType: 'blob'
                 }).then(r => {
                     // if (r.msg === 'success') data = r.data
@@ -211,7 +225,8 @@ function baiduAiTTS(text, per) {
                 }).catch(e => {
                     err = true
                     errMsg = e
-                })
+                })*/
+
                 if (!err) {
                     await playAudio(data).then(() => {
                         err = false
