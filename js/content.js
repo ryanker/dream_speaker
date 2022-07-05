@@ -105,6 +105,8 @@ function speak() {
             if (rcEl) rcEl.remove()
 
             text = node.innerText.trim()
+        } else if (node.nodeName === 'FONT') {
+            text = node.innerText.trim()
         } else if (node.nodeName === 'DIV' && node.className === '') {
             text = node.innerText.trim()
         }
